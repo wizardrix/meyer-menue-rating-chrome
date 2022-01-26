@@ -1,0 +1,22 @@
+{
+    "name": "Meyer-Menü Ratings",
+    "description": "Bewertungen der Mahlzeiten von Meyer-Menü",
+    "version": "0.0.0",
+    "manifest_version": 3,
+    "permissions": [
+        "storage"
+    ],
+    "content_scripts": [
+        {
+            "matches": [
+                "https://*.meyer-menue.de/*"
+            ],
+            "css": [
+                "styles.css"
+            ],
+            "js": [
+                "content-script.js"
+            ]
+        }
+    ]
+}
