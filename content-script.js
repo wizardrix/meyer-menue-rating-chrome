@@ -99,7 +99,7 @@ function saveRating(menuId, name, rating) {
 }
 
 chrome.storage.sync.get(null, menus => console.log(menus));
-// chrome.storage.sync.clear();
+chrome.storage.sync.getBytesInUse(null, bytes => console.log(bytes));
 
 const main = document.getElementById("main");
 const mainObserver = new MutationObserver((mutationList, observer) => {
