@@ -15,31 +15,19 @@ function initSidebarObserver() {
     });
 }
 
+// The menus are loaded into the calendar after the side finished loading,
+// therefore we need to listen on the calendar element once
+// The switching of the week is observed by the mainObserver
 function initCalendarObserver() {
     console.log("init calendar observer");
-    // Menüs werden erst im Nachhinein in den Kalender geladen, daher beobachte Änderungen
-    // und ziehe die Menüs heraus (haben class "headline").
     const calendar = document.getElementById("calendar");
-    const calendarObserver = new MutationObserver((mutationList, observer) => {
-        console.log("mutation");
-        const menuElements = [];
-        for (const mutation of mutationList) {
-            const mutationElement = mutation.target.parentElement;
-            if (mutationElement.classList.contains("headline")) {
-                //console.log(mutationElement.innerHTML);
-                menuElements.push(mutationElement.parentElement);
-                mutationElement.parentElement.addEventListener("click", event => {
-                    console.log("Menü geklickt!");
-                    // if (!thumbsAdded) {
-                    //     //console.log(document.getElementsByClassName("sidebar-actions").item(0));
-                    //     addThumbs(document.getElementById("sidebar"));
-                    //     thumbsAdded = true;
-                    // }
-                });
-            }
-        }
+    if (!calendar) {
+        console.log("no calendar found");
+        return;
+    }
 
-        console.log(menuElements);
+    const calendarObserver = new MutationObserver((mutationList, observer) => {
+        loadRatingsIntoCalendar();
     });
     calendarObserver.observe(calendar, {
         subtree: true,
@@ -47,14 +35,59 @@ function initCalendarObserver() {
     });
 }
 
+function loadRatingsIntoCalendar() {
+    console.log("load ratings");
+    document.querySelectorAll("[data-image]").forEach(element => {
+        const menuId = element.getAttribute("data-image").split("/").at(-1);
+        const headlineElement = element.nextSibling.firstChild.childNodes[1];
+        loadRatingIntoElement(headlineElement, menuId);
+    });
+}
+
+function fillStarRatingElement(ratingElement, rating) {
+    ratingElement.textContent = "";
+    for (let i = 1; i <= 5; i++) {
+        const starElement = document.createElement("span");
+        starElement.classList.add("star-icon");
+        if (rating >= i) {
+            starElement.classList.add("filled");
+            starElement.innerHTML = "&starf;";
+        } else {
+            starElement.innerHTML = "&star;";
+        }
+        ratingElement.appendChild(starElement);
+    }
+}
+
+async function loadRatingIntoElement(element, menuId) {
+    const menu = await loadRatingById(menuId);
+    if (typeof menu[menuId] !== "undefined") {
+        let ratingElement;
+        element.childNodes.forEach(child => {
+            if (child.classList.contains("rating-display")) {
+                ratingElement = child;
+            }
+        });
+        if (!ratingElement) {
+            ratingElement = document.createElement("div");
+            ratingElement.classList.add("rating-display");
+            element.appendChild(ratingElement);
+        }
+        fillStarRatingElement(ratingElement, menu[menuId].rating);
+    }
+}
+
 async function loadRatingIntoDetailsView(detailsContainer) {
     const menuId = document.getElementsByClassName("detail-image")[0].children[0].src.split("/").at(-1);
     const menuName = document.getElementsByClassName("detail-headline")[0].children[0].innerText;
     console.log(menuId + ": " + menuName);
 
-    const menu = await chrome.storage.sync.get(menuId)
+    const menu = await loadRatingById(menuId);
     const rating = typeof menu[menuId] === "undefined" ? -1 : menu[menuId].rating;
-    const ratingElement = createRatingElement(rating, (val) => saveRating(menuId, menuName, val));
+    const ratingElement = createRatingElement(rating, (val) => {
+        saveRating(menuId, menuName, val);
+        loadRatingsIntoCalendar();
+    });
 
     detailsContainer.childNodes.forEach((child) => {
         if (typeof child.classList !== "undefined" && child.classList.contains("sidebar-frame")) {
@@ -67,7 +100,7 @@ async function loadRatingIntoDetailsView(detailsContainer) {
 function createRatingElement(curValue, changeListener) {
     console.log(curValue);
     const ratingElement = document.createElement("div");
-    ratingElement.classList.add("rating");
+    ratingElement.classList.add("rating-input");
     for (let val = 1; val <= 5; val++) {
         const radioStar = createRadioStar(val, val == curValue);
         ratingElement.appendChild(createRadioStar(val, val == curValue, changeListener));
@@ -86,7 +119,7 @@ function createRadioStar(value, checked, changeListener) {
 }
 
 function loadRatingById(menuId) {
-    chrome.storage.sync.get([menuId]);
+    return chrome.storage.sync.get(menuId);
 }
 
 function saveRating(menuId, name, rating) {
@@ -101,12 +134,18 @@ function saveRating(menuId, name, rating) {
 chrome.storage.sync.get(null, menus => console.log(menus));
 chrome.storage.sync.getBytesInUse(null, bytes => console.log(bytes));
 
+// to load the ratings into the calendar, when the week is switched,
+// we need to listen for child addition to the main element
 const main = document.getElementById("main");
 const mainObserver = new MutationObserver((mutationList, observer) => {
     for (const mutation of mutationList) {
         if (mutation.addedNodes.length > 0) {
             initSidebarObserver();
-            initCalendarObserver();
+            if (document.querySelectorAll("[data-image]").length > 0) {
+                loadRatingsIntoCalendar();
+            } else {
+                initCalendarObserver();
+            }
         }
     }
 });
@@ -114,5 +153,5 @@ mainObserver.observe(main, {
     childList: true
 });
 
-initCalendarObserver();
 initSidebarObserver();
+initCalendarObserver();

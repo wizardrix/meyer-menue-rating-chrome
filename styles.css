@@ -1,3 +1,7 @@
-.rating {
+.rating-input {
+    text-align: center;
+}
+
+.rating-display {
     text-align: center;
 }
