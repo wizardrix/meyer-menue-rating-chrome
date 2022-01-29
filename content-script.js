@@ -35,13 +35,38 @@ function initCalendarObserver() {
     });
 }
 
+function getMenuElement(menuId) {
+    return document.querySelector("[data-image$=\"" + menuId + "\"]");
+}
+
 function loadRatingsIntoCalendar() {
     console.log("load ratings");
     document.querySelectorAll("[data-image]").forEach(element => {
-        const menuId = element.getAttribute("data-image").split("/").at(-1);
-        const headlineElement = element.nextSibling.firstChild.childNodes[1];
-        loadRatingIntoElement(headlineElement, menuId);
+        loadRatingIntoMenuElement(element);
     });
+}
+
+function loadRatingIntoMenuElement(menuElement) {
+    const menuId = menuElement.getAttribute("data-image").split("/").at(-1);
+    const headlineElement = menuElement.nextSibling.firstChild.childNodes[1];
+    loadRatingIntoElement(headlineElement, menuId);
+}
+
+async function loadRatingIntoElement(element, menuId) {
+    // clear element (in case rating was deleted)
+    element.childNodes.forEach(child => {
+        if (child.classList.contains("rating-display")) {
+            child.remove();
+        }
+    });
+    const menu = await loadRatingById(menuId);
+    // append rating element
+    if (typeof menu[menuId] !== "undefined") {
+        let ratingElement = document.createElement("div");
+        ratingElement.classList.add("rating-display");
+        fillStarRatingElement(ratingElement, menu[menuId].rating);
+        element.appendChild(ratingElement);
+    }
 }
 
 function fillStarRatingElement(ratingElement, rating) {
@@ -59,24 +84,6 @@ function fillStarRatingElement(ratingElement, rating) {
     }
 }
 
-async function loadRatingIntoElement(element, menuId) {
-    const menu = await loadRatingById(menuId);
-    if (typeof menu[menuId] !== "undefined") {
-        let ratingElement;
-        element.childNodes.forEach(child => {
-            if (child.classList.contains("rating-display")) {
-                ratingElement = child;
-            }
-        });
-        if (!ratingElement) {
-            ratingElement = document.createElement("div");
-            ratingElement.classList.add("rating-display");
-            element.appendChild(ratingElement);
-        }
-        fillStarRatingElement(ratingElement, menu[menuId].rating);
-    }
-}
-
 async function loadRatingIntoDetailsView(detailsContainer) {
     const menuId = document.getElementsByClassName("detail-image")[0].children[0].src.split("/").at(-1);
     const menuName = document.getElementsByClassName("detail-headline")[0].children[0].innerText;
@@ -84,26 +91,37 @@ async function loadRatingIntoDetailsView(detailsContainer) {
 
     const menu = await loadRatingById(menuId);
     const rating = typeof menu[menuId] === "undefined" ? -1 : menu[menuId].rating;
-    const ratingElement = createRatingElement(rating, (val) => {
-        saveRating(menuId, menuName, val);
-        loadRatingsIntoCalendar();
+
+    const ratingContainer = document.createElement("div");
+    ratingContainer.classList.add("rating-container");
+    const ratingElement = createRatingElement(rating, async (val) => {
+        await saveRating(menuId, menuName, val);
+        loadRatingIntoMenuElement(getMenuElement(menuId))
     });
+    const deleteButton = createDeleteButton(async () => {
+        await deleteRating(menuId);
+        ratingContainer.remove();
+        loadRatingIntoDetailsView(detailsContainer);
+        loadRatingIntoMenuElement(getMenuElement(menuId));
+    });
+    ratingContainer.appendChild(ratingElement);
+    ratingContainer.appendChild(deleteButton);
 
     detailsContainer.childNodes.forEach((child) => {
         if (typeof child.classList !== "undefined" && child.classList.contains("sidebar-frame")) {
-            detailsContainer.insertBefore(ratingElement, child);
+            detailsContainer.insertBefore(ratingContainer, child);
         }
     });
 
 }
 
-function createRatingElement(curValue, changeListener) {
+function createRatingElement(curValue, saveListener) {
     console.log(curValue);
     const ratingElement = document.createElement("div");
     ratingElement.classList.add("rating-input");
     for (let val = 1; val <= 5; val++) {
         const radioStar = createRadioStar(val, val == curValue);
-        ratingElement.appendChild(createRadioStar(val, val == curValue, changeListener));
+        ratingElement.appendChild(createRadioStar(val, val == curValue, saveListener));
     }
     return ratingElement;
 }
@@ -118,17 +136,28 @@ function createRadioStar(value, checked, changeListener) {
     return radio;
 }
 
+function createDeleteButton(deleteListener) {
+    const deleteButton = document.createElement("button");
+    deleteButton.innerHTML = "&#128465;";
+    deleteButton.addEventListener("click", deleteListener);
+    return deleteButton;
+}
+
 function loadRatingById(menuId) {
     return chrome.storage.sync.get(menuId);
 }
 
 function saveRating(menuId, name, rating) {
-    chrome.storage.sync.set({
+    return chrome.storage.sync.set({
         [menuId]: {
             name: name,
             rating: rating
         }
     })
+}
+
+function deleteRating(menuId) {
+    return chrome.storage.sync.remove(menuId);
 }
 
 chrome.storage.sync.get(null, menus => console.log(menus));

@@ -1,5 +1,9 @@
-.rating-input {
+.rating-container {
     text-align: center;
+}
+
+.rating-input {
+    display: inline;
 }
 
 .rating-display {
