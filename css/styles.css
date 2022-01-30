@@ -8,6 +8,10 @@
         format("opentype");
 }
 
+:root {
+    --main-color: #00b1fe;
+}
+
 .material-icons-outlined {
     font-family: "Material Icons Outlined";
     font-weight: normal;
@@ -27,20 +31,29 @@
     text-rendering: optimizeLegibility;
 }
 
+.mmr-delete-btn {
+    align-items: center;
+    background-color: unset;
+    border: none;
+    color: #888;
+    display: inline-flex;
+    margin: 0;
+    padding: 0;
+}
+
+.mmr-delete-btn:hover {
+    background-color: unset;
+    color: #f33f3c;
+}
+
 .rating-container {
-    background-color: #80d8ff;
+    background-color: var(--main-color);
     position: relative;
     text-align: center;
 }
 
 .rating-container button {
-    align-items: center;
-    background-color: unset;
-    color: #888;
-    display: inline-flex;
     left: 1rem;
-    margin: auto 0;
-    padding: 0;
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
@@ -106,16 +119,16 @@ have to be overwritten will outlined ones */
 }
 
 .rating-display .material-icons-outlined {
-    color: #80d8ff;
+    color: var(--main-color);
     font-size: 12px;
 }
 
-.mmr-popup-body {
+.mmr-popup body {
     padding: 2rem;
 }
 
-.mmr-popup-body h1 {
-    background-color: #00b1fe;
+.mmr-popup h1 {
+    background-color: var(--main-color);
     border-radius: 2px;
     color: #fff;
     font-size: 18px;
@@ -124,28 +137,28 @@ have to be overwritten will outlined ones */
     text-align: center;
 }
 
-#mmr-table {
-    font-size: 12px;
-    table-layout: fixed;
-    width: 30rem;
-}
-
-#mmr-table thead,
-#mmr-table tbody,
-#mmr-table tr {
-    display: block;
-    width: 100%;
-}
-
-#mmr-table tbody {
-    height: 20rem;
+.mmr-table-container {
+    height: 30rem;
     overflow-y: auto;
 }
 
-.mmr-col-s {
-    width: 5rem;
+#mmr-table {
+    font-size: 12px;
+    height: 100%;
+    overflow-y: auto;
+    width: 30rem;
 }
 
-.mmr-col-l {
-    width: 12rem;
+#mmr-table thead tr {
+    background-color: #fff;
+    border: none;
+    box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.12);
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.mmr-flex-v-align {
+    align-items: center;
+    display: flex;
 }

@@ -1,8 +1,7 @@
 import { createDeleteButton } from "./element-factory.js";
 
-function createTableElement(className, content) {
+function createTableElement(content) {
     const td = document.createElement("td");
-    td.classList.add(className);
     td.innerText = content;
     return td;
 }
@@ -23,13 +22,13 @@ chrome.storage.sync.get(null, (data) => {
         console.log(data[key].name);
         const row = document.createElement("tr");
 
-        row.appendChild(createTableElement("mmr-col-s", key));
-        row.appendChild(createTableElement("mmr-col-l", data[key].name));
-        row.appendChild(
-            createTableElement("mmr-col-s", data[key].rating + "/5")
-        );
-        const deleteTd = createTableElement("mmr-col-s", "");
-        deleteTd.appendChild(
+        row.appendChild(createTableElement(key));
+        row.appendChild(createTableElement(data[key].name));
+        row.appendChild(createTableElement(data[key].rating + "/5"));
+        const deleteTd = createTableElement("");
+        const btnWrapper = document.createElement("div");
+        btnWrapper.classList.add("mmr-flex-v-align");
+        btnWrapper.appendChild(
             createDeleteButton(() => {
                 chrome.storage.sync.remove(key);
                 row.remove();
@@ -38,6 +37,7 @@ chrome.storage.sync.get(null, (data) => {
                 });
             })
         );
+        deleteTd.appendChild(btnWrapper);
         row.appendChild(deleteTd);
 
         tableBody.appendChild(row);

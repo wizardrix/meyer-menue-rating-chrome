@@ -1,6 +1,6 @@
 {
-    "name": "Meyer-Menü Ratings",
-    "description": "Bewertungen der Mahlzeiten von Meyer-Menü",
+    "name": "Meyer Menü Ratings",
+    "description": "Eine Erweiterung, mit der man für sich selbst Bewertungen der Mahlzeiten von Meyer-Menü speichern kann.",
     "version": "0.0.0",
     "manifest_version": 3,
     "permissions": ["storage"],
