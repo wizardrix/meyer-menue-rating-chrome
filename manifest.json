@@ -6,15 +6,27 @@
     "permissions": [
         "storage"
     ],
-    "content_scripts": [{
-        "matches": [
-            "https://*.meyer-menue.de/*"
-        ],
-        "css": [
-            "styles.css"
-        ],
-        "js": [
-            "content-script.js"
-        ]
-    }]
+    "content_scripts": [
+        {
+            "matches": [
+                "https://*.meyer-menue.de/*"
+            ],
+            "css": [
+                "styles.css"
+            ],
+            "js": [
+                "content-script.js"
+            ]
+        }
+    ],
+    "web_accessible_resources": [
+        {
+            "matches": [
+                "https://*.meyer-menue.de/*"
+            ],
+            "resources": [
+                "fonts/*"
+            ]
+        }
+    ]
 }

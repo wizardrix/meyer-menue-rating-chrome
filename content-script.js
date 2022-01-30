@@ -73,12 +73,11 @@ function fillStarRatingElement(ratingElement, rating) {
     ratingElement.textContent = "";
     for (let i = 1; i <= 5; i++) {
         const starElement = document.createElement("span");
-        starElement.classList.add("star-icon");
+        starElement.classList.add("material-icons-outlined");
         if (rating >= i) {
-            starElement.classList.add("filled");
-            starElement.innerHTML = "&starf;";
+            starElement.innerHTML = "star";
         } else {
-            starElement.innerHTML = "&star;";
+            starElement.innerHTML = "star_outline";
         }
         ratingElement.appendChild(starElement);
     }
@@ -94,18 +93,19 @@ async function loadRatingIntoDetailsView(detailsContainer) {
 
     const ratingContainer = document.createElement("div");
     ratingContainer.classList.add("rating-container");
-    const ratingElement = createRatingElement(rating, async (val) => {
-        await saveRating(menuId, menuName, val);
-        loadRatingIntoMenuElement(getMenuElement(menuId))
-    });
+
     const deleteButton = createDeleteButton(async () => {
         await deleteRating(menuId);
         ratingContainer.remove();
         loadRatingIntoDetailsView(detailsContainer);
         loadRatingIntoMenuElement(getMenuElement(menuId));
     });
-    ratingContainer.appendChild(ratingElement);
+    const ratingElement = createRatingElement(rating, async (val) => {
+        await saveRating(menuId, menuName, val);
+        loadRatingIntoMenuElement(getMenuElement(menuId))
+    });
     ratingContainer.appendChild(deleteButton);
+    ratingContainer.appendChild(ratingElement);
 
     detailsContainer.childNodes.forEach((child) => {
         if (typeof child.classList !== "undefined" && child.classList.contains("sidebar-frame")) {
@@ -119,15 +119,16 @@ function createRatingElement(curValue, saveListener) {
     console.log(curValue);
     const ratingElement = document.createElement("div");
     ratingElement.classList.add("rating-input");
-    for (let val = 1; val <= 5; val++) {
-        const radioStar = createRadioStar(val, val == curValue);
-        ratingElement.appendChild(createRadioStar(val, val == curValue, saveListener));
+    for (let val = 5; val >= 1; val--) {
+        ratingElement.appendChild(createRadioButton(val, val == curValue, saveListener));
+        ratingElement.appendChild(createRadioLabel(val));
     }
     return ratingElement;
 }
 
-function createRadioStar(value, checked, changeListener) {
+function createRadioButton(value, checked, changeListener) {
     const radio = document.createElement("input");
+    radio.setAttribute("id", "star-" + value);
     radio.setAttribute("type", "radio");
     radio.setAttribute("name", "rating");
     radio.setAttribute("value", value);
@@ -136,9 +137,18 @@ function createRadioStar(value, checked, changeListener) {
     return radio;
 }
 
+function createRadioLabel(value) {
+    const label = document.createElement("label");
+    label.setAttribute("for", "star-" + value);
+    return label;
+}
+
 function createDeleteButton(deleteListener) {
     const deleteButton = document.createElement("button");
-    deleteButton.innerHTML = "&#128465;";
+    const deleteIcon = document.createElement("span");
+    deleteIcon.classList.add("material-icons-outlined");
+    deleteIcon.innerHTML = "delete";
+    deleteButton.appendChild(deleteIcon);
     deleteButton.addEventListener("click", deleteListener);
     return deleteButton;
 }

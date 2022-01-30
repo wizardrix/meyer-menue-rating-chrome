@@ -1,11 +1,69 @@
+@font-face {
+    font-family: "MaterialIconsOutlined";
+    font-style: normal;
+    font-weight: 400;
+    src: url('chrome-extension://__MSG_@@extension_id__/fonts/MaterialIconsOutlined-Regular.otf') format("opentype");
+}
+
+.material-icons-outlined {
+    font-family: "MaterialIconsOutlined";
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;  /* Preferred icon size */
+    display: inline-block;
+    line-height: 1;
+    text-transform: none;
+    letter-spacing: normal;
+    word-wrap: normal;
+    white-space: nowrap;
+    direction: ltr;
+  
+    /* Support for all WebKit browsers. */
+    -webkit-font-smoothing: antialiased;
+    /* Support for Safari and Chrome. */
+    text-rendering: optimizeLegibility;
+  }
+
 .rating-container {
     text-align: center;
 }
 
-.rating-input {
+.rating-container button {
+    padding: 1px 6px;
+}
+
+.rating-input{
     display: inline;
+    unicode-bidi: bidi-override;
+    direction: rtl;
+}
+
+.rating-input input[type=radio]+label {
+    cursor: pointer;
+    display: inline-block;
+    margin: 0;
+    width: 24px;
+}
+
+.rating-input label::before {
+    content: "star_outline";
+    font-family: "MaterialIconsOutlined";
+    font-size: 24px;
+}
+
+.rating-input input[type=radio]:checked~label::before {
+    content: "star";
+}
+
+.rating-input input[type=radio] {
+    appearance: none;
+    margin: 0;
 }
 
 .rating-display {
     text-align: center;
+}
+
+.rating-display .material-icons-outlined {
+    font-size: 12px;
 }
