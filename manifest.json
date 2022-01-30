@@ -19,5 +19,6 @@
             "matches": ["https://*.meyer-menue.de/*"],
             "resources": ["fonts/*"]
         }
-    ]
+    ],
+    "homepage_url": "https://github.com/wizardrix/meyer-menue-rating-chrome"
 }
