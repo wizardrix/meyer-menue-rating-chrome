@@ -10,7 +10,7 @@ Bis die Erweiterung im Chrome-Store erhältlich ist, kann sie am einfachsten hie
 
 ## Bedienung
 
-Man wählt einfach ein Menü aus der Wochenübersicht im [Meyer Menü Shop](https://shop.meyer-menue.de/) aus und kann deine eine Bewertung in der Detailansicht eingeben. Diese ist dann automatisch gespeichert und wird ebenfalls in der Wochenübersicht angezeigt.
+Man wählt einfach ein Menü aus der Wochenübersicht im [Meyer Menü Shop](https://shop.meyer-menue.de/) aus und kann dann eine Bewertung in der Detailansicht eingeben. Diese ist automatisch gespeichert und wird ebenfalls in der Wochenübersicht angezeigt.
 
 Mithilfe des Mülltonnen-Buttons in der Detailansicht kann man eine Bewertung auch wieder löschen.
 
