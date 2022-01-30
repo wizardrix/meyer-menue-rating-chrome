@@ -1,3 +1,5 @@
+/* @import url("chrome-extension://__MSG_@@extension_id__/css/materialize.min.css"); */
+
 @font-face {
     font-family: "Material Icons Outlined";
     font-style: normal;
@@ -106,4 +108,44 @@ have to be overwritten will outlined ones */
 .rating-display .material-icons-outlined {
     color: #80d8ff;
     font-size: 12px;
+}
+
+.mmr-popup-body {
+    padding: 2rem;
+}
+
+.mmr-popup-body h1 {
+    background-color: #00b1fe;
+    border-radius: 2px;
+    color: #fff;
+    font-size: 18px;
+    margin-top: 0;
+    padding: 15px 5px;
+    text-align: center;
+}
+
+#mmr-table {
+    font-size: 12px;
+    table-layout: fixed;
+    width: 30rem;
+}
+
+#mmr-table thead,
+#mmr-table tbody,
+#mmr-table tr {
+    display: block;
+    width: 100%;
+}
+
+#mmr-table tbody {
+    height: 20rem;
+    overflow-y: auto;
+}
+
+.mmr-col-s {
+    width: 5rem;
+}
+
+.mmr-col-l {
+    width: 12rem;
 }

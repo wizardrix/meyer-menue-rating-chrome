@@ -3,30 +3,21 @@
     "description": "Bewertungen der Mahlzeiten von Meyer-Menü",
     "version": "0.0.0",
     "manifest_version": 3,
-    "permissions": [
-        "storage"
-    ],
+    "permissions": ["storage"],
+    "action": {
+        "default_popup": "popup.html"
+    },
     "content_scripts": [
         {
-            "matches": [
-                "https://*.meyer-menue.de/*"
-            ],
-            "css": [
-                "styles.css"
-            ],
-            "js": [
-                "content-script.js"
-            ]
+            "matches": ["https://*.meyer-menue.de/*"],
+            "css": ["css/styles.css"],
+            "js": ["js/content-script.js"]
         }
     ],
     "web_accessible_resources": [
         {
-            "matches": [
-                "https://*.meyer-menue.de/*"
-            ],
-            "resources": [
-                "fonts/*"
-            ]
+            "matches": ["https://*.meyer-menue.de/*"],
+            "resources": ["fonts/*"]
         }
     ]
 }

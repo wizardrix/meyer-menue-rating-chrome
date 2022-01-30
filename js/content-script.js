@@ -1,3 +1,6 @@
+// geht nicht... grrr...
+//import { createDeleteButton } from "./element-factory";
+
 function initSidebarObserver() {
     console.log("init sidebar observer");
     const sidebar = document.getElementById("sidebar");
