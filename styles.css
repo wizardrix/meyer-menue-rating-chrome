@@ -1,15 +1,16 @@
 @font-face {
-    font-family: "MaterialIconsOutlined";
+    font-family: "Material Icons Outlined";
     font-style: normal;
     font-weight: 400;
-    src: url('chrome-extension://__MSG_@@extension_id__/fonts/MaterialIconsOutlined-Regular.otf') format("opentype");
+    src: url("chrome-extension://__MSG_@@extension_id__/fonts/MaterialIconsOutlined-Regular.otf")
+        format("opentype");
 }
 
 .material-icons-outlined {
-    font-family: "MaterialIconsOutlined";
+    font-family: "Material Icons Outlined";
     font-weight: normal;
     font-style: normal;
-    font-size: 24px;  /* Preferred icon size */
+    font-size: 24px; /* Preferred icon size */
     display: inline-block;
     line-height: 1;
     text-transform: none;
@@ -17,45 +18,83 @@
     word-wrap: normal;
     white-space: nowrap;
     direction: ltr;
-  
+
     /* Support for all WebKit browsers. */
     -webkit-font-smoothing: antialiased;
     /* Support for Safari and Chrome. */
     text-rendering: optimizeLegibility;
-  }
+}
 
 .rating-container {
+    background-color: #80d8ff;
+    position: relative;
     text-align: center;
 }
 
 .rating-container button {
-    padding: 1px 6px;
+    align-items: center;
+    background-color: unset;
+    color: #888;
+    display: inline-flex;
+    left: 1rem;
+    margin: auto 0;
+    padding: 0;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
-.rating-input{
+.rating-container button:hover {
+    background-color: unset;
+    color: #f33f3c;
+}
+
+.rating-container button .material-icons-outlined {
+    font-size: 18px;
+}
+
+/* The direction has to be inversed, so that the sibling "~" selector for the
+star filling works, as this only selects siblings AFTER the checked input label.
+Therefore the input values in the DOM are also reversed.  */
+.rating-input {
     display: inline;
     unicode-bidi: bidi-override;
     direction: rtl;
 }
 
-.rating-input input[type=radio]+label {
+.rating-input input[type="radio"] + label {
     cursor: pointer;
     display: inline-block;
     margin: 0;
     width: 24px;
 }
 
-.rating-input label::before {
+/* default style of the star icons is hollow */
+.rating-input input[type="radio"] + label::before {
+    color: #bfe00c;
     content: "star_outline";
-    font-family: "MaterialIconsOutlined";
+    font-family: "Material Icons Outlined";
     font-size: 24px;
 }
 
-.rating-input input[type=radio]:checked~label::before {
+/* when there is a rating (checked), fill all stars until a checked input  */
+.rating-input input[type=radio]:checked~label::before, 
+.rating-input input[type=radio]:hover~label::before,
+/* On hover, independent of a radio button being checked, the stars are filled until the hovered label */
+.rating-input:hover input[type=radio] + label:hover::before,
+.rating-input:hover input[type=radio] + label:hover ~ label::before {
+    color: #daf96b;
     content: "star";
 }
 
-.rating-input input[type=radio] {
+/* for the hover effect to work on already rated menus, previously filled stars from a checked radio button,
+have to be overwritten will outlined ones */
+.rating-input:hover input[type="radio"] + label::before {
+    color: #bfe00c;
+    content: "star_outline";
+}
+
+.rating-input input[type="radio"] {
     appearance: none;
     margin: 0;
 }
@@ -65,5 +104,6 @@
 }
 
 .rating-display .material-icons-outlined {
+    color: #80d8ff;
     font-size: 12px;
 }
