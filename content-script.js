@@ -11,7 +11,7 @@ function initSidebarObserver() {
     });
     sidebarObserver.observe(sidebar, {
         subtree: true,
-        childList: true
+        childList: true,
     });
 }
 
@@ -31,17 +31,17 @@ function initCalendarObserver() {
     });
     calendarObserver.observe(calendar, {
         subtree: true,
-        characterData: true
+        characterData: true,
     });
 }
 
 function getMenuElement(menuId) {
-    return document.querySelector("[data-image$=\"" + menuId + "\"]");
+    return document.querySelector('[data-image$="' + menuId + '"]');
 }
 
 function loadRatingsIntoCalendar() {
     console.log("load ratings");
-    document.querySelectorAll("[data-image]").forEach(element => {
+    document.querySelectorAll("[data-image]").forEach((element) => {
         loadRatingIntoMenuElement(element);
     });
 }
@@ -54,7 +54,7 @@ function loadRatingIntoMenuElement(menuElement) {
 
 async function loadRatingIntoElement(element, menuId) {
     // clear element (in case rating was deleted)
-    element.childNodes.forEach(child => {
+    element.childNodes.forEach((child) => {
         if (child.classList.contains("rating-display")) {
             child.remove();
         }
@@ -84,35 +84,42 @@ function fillStarRatingElement(ratingElement, rating) {
 }
 
 async function loadRatingIntoDetailsView(detailsContainer) {
-    const menuId = document.getElementsByClassName("detail-image")[0].children[0].src.split("/").at(-1);
-    const menuName = document.getElementsByClassName("detail-headline")[0].children[0].innerText;
+    const menuId = document
+        .getElementsByClassName("detail-image")[0]
+        .children[0].src.split("/")
+        .at(-1);
+    const menuName =
+        document.getElementsByClassName("detail-headline")[0].children[0]
+            .innerText;
     console.log(menuId + ": " + menuName);
 
     const menu = await loadRatingById(menuId);
-    const rating = typeof menu[menuId] === "undefined" ? -1 : menu[menuId].rating;
+    const rating =
+        typeof menu[menuId] === "undefined" ? -1 : menu[menuId].rating;
 
     const ratingContainer = document.createElement("div");
     ratingContainer.classList.add("rating-container");
 
     const deleteButton = createDeleteButton(async () => {
         await deleteRating(menuId);
-        ratingContainer.remove();
-        loadRatingIntoDetailsView(detailsContainer);
+        resetRadioInput();
         loadRatingIntoMenuElement(getMenuElement(menuId));
     });
     const ratingElement = createRatingElement(rating, async (val) => {
         await saveRating(menuId, menuName, val);
-        loadRatingIntoMenuElement(getMenuElement(menuId))
+        loadRatingIntoMenuElement(getMenuElement(menuId));
     });
     ratingContainer.appendChild(deleteButton);
     ratingContainer.appendChild(ratingElement);
 
     detailsContainer.childNodes.forEach((child) => {
-        if (typeof child.classList !== "undefined" && child.classList.contains("sidebar-frame")) {
+        if (
+            typeof child.classList !== "undefined" &&
+            child.classList.contains("sidebar-frame")
+        ) {
             detailsContainer.insertBefore(ratingContainer, child);
         }
     });
-
 }
 
 function createRatingElement(curValue, saveListener) {
@@ -120,7 +127,9 @@ function createRatingElement(curValue, saveListener) {
     const ratingElement = document.createElement("div");
     ratingElement.classList.add("rating-input");
     for (let val = 5; val >= 1; val--) {
-        ratingElement.appendChild(createRadioButton(val, val == curValue, saveListener));
+        ratingElement.appendChild(
+            createRadioButton(val, val == curValue, saveListener)
+        );
         ratingElement.appendChild(createRadioLabel(val));
     }
     return ratingElement;
@@ -153,6 +162,11 @@ function createDeleteButton(deleteListener) {
     return deleteButton;
 }
 
+function resetRadioInput() {
+    const ratingInputs = document.getElementsByName("rating");
+    ratingInputs.forEach((ratingInput) => (ratingInput.checked = false));
+}
+
 function loadRatingById(menuId) {
     return chrome.storage.sync.get(menuId);
 }
@@ -161,17 +175,17 @@ function saveRating(menuId, name, rating) {
     return chrome.storage.sync.set({
         [menuId]: {
             name: name,
-            rating: rating
-        }
-    })
+            rating: rating,
+        },
+    });
 }
 
 function deleteRating(menuId) {
     return chrome.storage.sync.remove(menuId);
 }
 
-chrome.storage.sync.get(null, menus => console.log(menus));
-chrome.storage.sync.getBytesInUse(null, bytes => console.log(bytes));
+chrome.storage.sync.get(null, (menus) => console.log(menus));
+chrome.storage.sync.getBytesInUse(null, (bytes) => console.log(bytes));
 
 // to load the ratings into the calendar, when the week is switched,
 // we need to listen for child addition to the main element
@@ -189,7 +203,7 @@ const mainObserver = new MutationObserver((mutationList, observer) => {
     }
 });
 mainObserver.observe(main, {
-    childList: true
+    childList: true,
 });
 
 initSidebarObserver();
